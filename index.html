@@ -87,7 +87,17 @@ for (let i = 0; i < 25; i++) {
     )
   );
 }
+function fight(a, b) {
 
+  let damage = 8 + Math.random() * 10;
+
+  b.energy -= damage;
+  a.energy += damage * 0.4;
+
+  if (b.energy <= 0) {
+    b.energy = 0;
+  }
+}
 // ======================
 // MOVE
 // ======================
@@ -170,6 +180,25 @@ for (let y = 0; y < gridSize; y++) {
 
 // energy system
 e.energy -= 0.02;
+
+// 👇 PUT FIGHTING HERE
+let localFood = food[e.y][e.x];
+
+if (localFood < 2 && Math.random() < 0.05) {
+
+  for (let other of entities) {
+
+    if (other === e) continue;
+
+    let dx = Math.abs(other.x - e.x);
+    let dy = Math.abs(other.y - e.y);
+
+    if (dx <= 1 && dy <= 1 && other.energy > 0) {
+      fight(e, other);
+      break;
+    }
+  }
+}
 
     // eat
     if (food[e.y][e.x] > 0) {
