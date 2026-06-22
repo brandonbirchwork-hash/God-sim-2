@@ -145,7 +145,15 @@ function loop() {
 
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+for (let y = 0; y < gridSize; y++) {
+  for (let x = 0; x < gridSize; x++) {
 
+    // slowly regenerate food
+    if (food[y][x] < 8 && Math.random() < 0.02) {
+      food[y][x] += 1;
+    }
+  }
+}
   // draw food
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
@@ -173,7 +181,7 @@ e.energy -= 0.02;
     move(e);
 
     // reproduction (stable)
-    if (e.energy > 30) {
+  if (e.energy > 40 && Math.random() < 0.3) {
       e.energy -= 10;
 
       alive.push(spawnEntity(e.x, e.y, 15));
