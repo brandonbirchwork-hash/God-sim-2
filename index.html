@@ -31,7 +31,7 @@ for (let y = 0; y < gridSize; y++) {
 // ENTITIES (IMPORTANT: persistent array)
 // ======================
 let entities = [];
-
+let selected = null;
 function spawnEntity(x, y, energy = 20) {
 
   const names = [
@@ -51,7 +51,32 @@ function spawnEntity(x, y, energy = 20) {
     energy
   };
 }
+canvas.addEventListener("click", (event) => {
 
+  const rect = canvas.getBoundingClientRect();
+
+  const mouseX = event.clientX - rect.left;
+  const mouseY = event.clientY - rect.top;
+
+  selected = null;
+
+  for (let e of entities) {
+
+    let ex = e.x * tile;
+    let ey = e.y * tile;
+
+    if (
+      mouseX >= ex &&
+      mouseX <= ex + tile * 2 &&
+      mouseY >= ey &&
+      mouseY <= ey + tile * 2
+    ) {
+      selected = e;
+      break;
+    }
+  }
+
+});
 // start population
 for (let i = 0; i < 25; i++) {
   entities.push(
@@ -66,7 +91,7 @@ for (let i = 0; i < 25; i++) {
 // ======================
 // MOVE
 // ======================
-function move(e) {
+function move(e) 
 
   let dirs = [
     [1,0],
@@ -187,9 +212,27 @@ ctx.fillRect(
     }
   }
 
-  let first = entities[0];
+  if (selected) {
 
-document.getElementById("ui").innerText =
+  document.getElementById("ui").innerText =
+`${selected.name}
+Sex: ${selected.sex}
+Age: ${selected.age.toFixed(1)}
+Energy: ${selected.energy.toFixed(1)}
+Children: ${selected.children}`;
+
+} else {
+
+  if (entities.length === 0) {
+    document.getElementById("ui").innerText =
+`God Sim
+
+EXTINCTION EVENT`;
+  } else {
+
+    let first = entities[0];
+
+    document.getElementById("ui").innerText =
 `God Sim
 
 Population: ${entities.length}
@@ -199,6 +242,8 @@ Sex: ${first.sex}
 Age: ${first.age.toFixed(1)}
 
 Food: ${food.flat().filter(f => f > 0).length}`;
+  }
+}
 
   requestAnimationFrame(loop);
 }
