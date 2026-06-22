@@ -110,8 +110,10 @@ function loop() {
 
   for (let e of entities) {
 
-    // energy system
-    e.energy -= 0.02;
+   e.age += 0.01;
+
+// energy system
+e.energy -= 0.02;
 
     // eat
     if (food[e.y][e.x] > 0) {
@@ -159,11 +161,18 @@ ctx.fillRect(
     }
   }
 
-  document.getElementById("ui").innerText =
-`God Sim - Stable Ecosystem
+  let first = entities[0];
+
+document.getElementById("ui").innerText =
+`God Sim
 
 Population: ${entities.length}
-Food density: ${food.flat().filter(f => f > 0).length}`;
+
+Name: ${first.name}
+Sex: ${first.sex}
+Age: ${first.age.toFixed(1)}
+
+Food: ${food.flat().filter(f => f > 0).length}`;
 
   requestAnimationFrame(loop);
 }
