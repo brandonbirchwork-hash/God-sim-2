@@ -185,9 +185,8 @@ e.energy -= 0.02;
 
 let localFood = food[e.y][e.x];
 
-// only act if hungry
 if (localFood < 2) {
-if (dx <= 1 && dy <= 1 && other.energy > 0)
+
   for (let other of entities) {
 
     if (other === e) continue;
@@ -199,11 +198,9 @@ if (dx <= 1 && dy <= 1 && other.energy > 0)
 
     if (close) {
 
-      // ⚖️ DECISION: fight or run
       if (e.energy > other.energy * 1.2) {
-        fight(e, other); // strong = attack
+        fight(e, other);
       } else {
-        // weak = run away
         if (Math.random() < 0.7) {
           e.x += (e.x - other.x);
           e.y += (e.y - other.y);
@@ -213,7 +210,7 @@ if (dx <= 1 && dy <= 1 && other.energy > 0)
       break;
     }
   }
-} {
+}
 
 
 
