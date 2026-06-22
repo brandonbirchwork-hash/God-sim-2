@@ -117,10 +117,19 @@ function loop() {
       alive.push(spawnEntity(e.x, e.y, 15));
     }
 
-    // death check
-    if (e.energy > 0) {
-      alive.push(e);
-    }
+// death check
+if (e.energy > 0) {
+  alive.push(e);
+}
+
+// DRAW ENTITY
+ctx.fillStyle = "red";
+ctx.fillRect(
+  e.x * tile,
+  e.y * tile,
+  tile * 2,
+  tile * 2
+);
   }
 
   entities = alive;
