@@ -67,6 +67,44 @@ function loop(){
 
 loop();
 </script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
 
+let x = 50;
+let y = 50;
+
+let energy = 20;
+
+function loop(){
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // move entity
+  x += 1;
+
+  // energy drain (simple survival)
+  energy -= 0.02;
+
+  if(energy <= 0){
+    x = 50; // reset if "dead"
+    energy = 20;
+  }
+
+  // draw entity
+  ctx.fillStyle = "white";
+  ctx.fillRect(x,y,10,10);
+
+  // UI
+  document.getElementById("ui").innerText =
+`God Sim Test Build
+
+Energy: ${energy.toFixed(1)}
+Status: ${energy > 0 ? "Alive" : "Respawning"}`;
+
+  requestAnimationFrame(loop);
+}
+
+loop();
 </body>
 </html>
