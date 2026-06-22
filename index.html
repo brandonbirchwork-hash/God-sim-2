@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>God Sim Starter</title>
+  <title>God Sim - Clean Base</title>
 
   <style>
     body {
@@ -23,6 +23,7 @@
       font-family: monospace;
       background: rgba(0,0,0,0.6);
       padding: 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -30,7 +31,7 @@
 <body>
 
 <canvas id="c"></canvas>
-<div id="ui">Loading world...</div>
+<div id="ui">Loading simulation...</div>
 
 <script>
 const canvas = document.getElementById("c");
@@ -41,53 +42,34 @@ function resize(){
   canvas.height = window.innerHeight;
 }
 resize();
-
 window.addEventListener("resize", resize);
 
-// simple world
-let x = 50;
-let y = 50;
-
-function loop(){
-
-  ctx.fillStyle = "black";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  // test entity
-  ctx.fillStyle = "white";
-  ctx.fillRect(x,y,10,10);
-
-  x += 1;
-
-  document.getElementById("ui").innerText =
-    "God Sim Running...";
-
-  requestAnimationFrame(loop);
-}
-
-loop();
-</script>
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
-
-let x = 50;
-let y = 50;
-
+// ======================
+// WORLD SETTINGS
+// ======================
+let x = 100;
+let y = 100;
 let energy = 20;
 
+// ======================
+// MAIN LOOP
+// ======================
 function loop(){
 
+  // clear screen
   ctx.fillStyle = "black";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // move entity
+  // simple movement
   x += 1;
 
-  // energy drain (simple survival)
-  energy -= 0.02;
+  // energy system (survival pressure)
+  energy -= 0.03;
 
+  // death / respawn
   if(energy <= 0){
-    x = 50; // reset if "dead"
+    x = 100;
+    y = 100;
     energy = 20;
   }
 
@@ -97,8 +79,9 @@ function loop(){
 
   // UI
   document.getElementById("ui").innerText =
-`God Sim Test Build
+`God Sim Base Engine
 
+Entity Position: (${x.toFixed(0)}, ${y.toFixed(0)})
 Energy: ${energy.toFixed(1)}
 Status: ${energy > 0 ? "Alive" : "Respawning"}`;
 
@@ -106,5 +89,7 @@ Status: ${energy > 0 ? "Alive" : "Respawning"}`;
 }
 
 loop();
+</script>
+
 </body>
 </html>
