@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>God Sim Starter</title>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #ui {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-family: monospace;
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<canvas id="c"></canvas>
+<div id="ui">Loading world...</div>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+
+window.addEventListener("resize", resize);
+
+// simple world
+let x = 50;
+let y = 50;
+
+function loop(){
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // test entity
+  ctx.fillStyle = "white";
+  ctx.fillRect(x,y,10,10);
+
+  x += 1;
+
+  document.getElementById("ui").innerText =
+    "God Sim Running...";
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>
