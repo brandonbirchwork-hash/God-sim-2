@@ -13,7 +13,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // ======================
-// WORLD FOOD GRID
+// WORLD
 // ======================
 const gridSize = 80;
 const tile = 8;
@@ -33,7 +33,7 @@ for (let y = 0; y < gridSize; y++) {
 // ======================
 let entities = [];
 
-for (let i = 0; i < 25; i++) {
+for (let i = 0; i < 20; i++) {
   entities.push({
     x: Math.floor(Math.random() * gridSize),
     y: Math.floor(Math.random() * gridSize),
@@ -42,7 +42,7 @@ for (let i = 0; i < 25; i++) {
 }
 
 // ======================
-// MOVE TOWARD FOOD
+// MOVE TO FOOD
 // ======================
 function move(e) {
   let dirs = [[1,0],[-1,0],[0,1],[0,-1]];
@@ -79,18 +79,19 @@ function loop() {
   // draw food
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
-
       ctx.fillStyle = food[y][x] > 0 ? "#2ecc71" : "#0b2a4a";
       ctx.fillRect(x * tile, y * tile, tile, tile);
     }
   }
+
+  let newEntities = [];
 
   for (let e of entities) {
 
     // energy drain
     e.energy -= 0.05;
 
-    // eat food
+    // eat
     if (food[e.y][e.x] > 0) {
       e.energy += 1;
       food[e.y][e.x] -= 0.4;
@@ -99,23 +100,36 @@ function loop() {
     // movement
     move(e);
 
-    // death + respawn
+    // REPRODUCTION SYSTEM
+    if (e.energy > 35) {
+      e.energy -= 15;
+
+      newEntities.push({
+        x: e.x,
+        y: e.y,
+        energy: 15
+      });
+    }
+
+    // death
     if (e.energy <= 0) {
-      e.x = Math.floor(Math.random() * gridSize);
-      e.y = Math.floor(Math.random() * gridSize);
-      e.energy = 20 + Math.random() * 20;
+      continue; // remove entity
     }
 
     // draw entity
     ctx.fillStyle = "white";
     ctx.fillRect(e.x * tile, e.y * tile, tile, tile);
+
+    newEntities.push(e);
   }
 
+  entities = newEntities;
+
   document.getElementById("ui").innerText =
-`God Sim - Food Ecosystem
+`God Sim - Reproduction System
 
 Population: ${entities.length}
-Food cells active: ${food.flat().filter(f => f > 0).length}`;
+Food remaining: ${food.flat().filter(f => f > 0).length}`;
 
   requestAnimationFrame(loop);
 }
