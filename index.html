@@ -67,27 +67,53 @@ for (let i = 0; i < 25; i++) {
 // MOVE
 // ======================
 function move(e) {
-  let dirs = [[1,0],[-1,0],[0,1],[0,-1]];
 
-  let bestX = e.x;
-  let bestY = e.y;
-  let bestFood = food[e.y][e.x];
+  let dirs = [
+    [1,0],
+    [-1,0],
+    [0,1],
+    [0,-1]
+  ];
 
-  for (let d of dirs) {
-    let nx = e.x + d[0];
-    let ny = e.y + d[1];
+  // 70% chance to seek food
+  if (Math.random() < 0.7) {
 
-    if (nx < 0 || ny < 0 || nx >= gridSize || ny >= gridSize) continue;
+    let bestX = e.x;
+    let bestY = e.y;
+    let bestFood = food[e.y][e.x];
 
-    if (food[ny][nx] > bestFood) {
-      bestFood = food[ny][nx];
-      bestX = nx;
-      bestY = ny;
+    for (let d of dirs) {
+
+      let nx = e.x + d[0];
+      let ny = e.y + d[1];
+
+      if (nx < 0 || ny < 0 || nx >= gridSize || ny >= gridSize)
+        continue;
+
+      if (food[ny][nx] > bestFood) {
+        bestFood = food[ny][nx];
+        bestX = nx;
+        bestY = ny;
+      }
     }
-  }
 
-  e.x = bestX;
-  e.y = bestY;
+    e.x = bestX;
+    e.y = bestY;
+
+  } else {
+
+    // random wandering
+    let d = dirs[Math.floor(Math.random() * dirs.length)];
+
+    e.x += d[0];
+    e.y += d[1];
+
+    if (e.x < 0) e.x = 0;
+    if (e.y < 0) e.y = 0;
+    if (e.x >= gridSize) e.x = gridSize - 1;
+    if (e.y >= gridSize) e.y = gridSize - 1;
+  }
+}
 }
 
 // ======================
