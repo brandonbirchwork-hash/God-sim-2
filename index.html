@@ -37,53 +37,111 @@
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
-function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// ======================
+// WORLD
+// ======================
+const size = 60;
+const tile = 12;
+
+let food = [];
+
+// generate food grid
+for (let y = 0; y < size; y++) {
+  let row = [];
+  for (let x = 0; x < size; x++) {
+    row.push(Math.random() < 0.2 ? 5 : 0);
+  }
+  food.push(row);
 }
-resize();
-window.addEventListener("resize", resize);
 
 // ======================
-// WORLD SETTINGS
+// ENTITY
 // ======================
-let x = 100;
-let y = 100;
-let energy = 20;
+let x = 20;
+let y = 20;
+let energy = 30;
+
+// movement helper
+function moveTowardFood() {
+  let bestX = x;
+  let bestY = y;
+  let bestFood = food[y][x];
+
+  let dirs = [
+    [1,0],[-1,0],[0,1],[0,-1]
+  ];
+
+  for (let d of dirs) {
+    let nx = x + d[0];
+    let ny = y + d[1];
+
+    if (nx < 0 || ny < 0 || nx >= size || ny >= size) continue;
+
+    if (food[ny][nx] > bestFood) {
+      bestFood = food[ny][nx];
+      bestX = nx;
+      bestY = ny;
+    }
+  }
+
+  x = bestX;
+  y = bestY;
+}
 
 // ======================
-// MAIN LOOP
+// LOOP
 // ======================
-function loop(){
+function loop() {
 
-  // clear screen
   ctx.fillStyle = "black";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // simple movement
-  x += 1;
+  // draw food
+  for (let yy = 0; yy < size; yy++) {
+    for (let xx = 0; xx < size; xx++) {
 
-  // energy system (survival pressure)
-  energy -= 0.03;
+      if (food[yy][xx] > 0) {
+        ctx.fillStyle = "#2ecc71";
+      } else {
+        ctx.fillStyle = "#0b2a4a";
+      }
 
-  // death / respawn
-  if(energy <= 0){
-    x = 100;
-    y = 100;
-    energy = 20;
+      ctx.fillRect(xx*tile, yy*tile, tile, tile);
+    }
   }
+
+  // hunger system
+  energy -= 0.05;
+
+  // eat food
+  if (food[y][x] > 0) {
+    energy += 0.8;
+    food[y][x] -= 0.2;
+  }
+
+  // death reset
+  if (energy <= 0) {
+    x = 20;
+    y = 20;
+    energy = 30;
+  }
+
+  // movement
+  moveTowardFood();
 
   // draw entity
   ctx.fillStyle = "white";
-  ctx.fillRect(x,y,10,10);
+  ctx.fillRect(x*tile, y*tile, tile, tile);
 
   // UI
   document.getElementById("ui").innerText =
-`God Sim Base Engine
+`God Sim - Food System
 
-Entity Position: (${x.toFixed(0)}, ${y.toFixed(0)})
 Energy: ${energy.toFixed(1)}
-Status: ${energy > 0 ? "Alive" : "Respawning"}`;
+Position: (${x}, ${y})`;
 
   requestAnimationFrame(loop);
 }
