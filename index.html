@@ -12,19 +12,60 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let x = 50;
+// ======================
+// ENTITY SYSTEM
+// ======================
+let entities = [];
 
-function loop(){
+for (let i = 0; i < 30; i++) {
+  entities.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    energy: 20 + Math.random() * 20,
+    vx: (Math.random() - 0.5) * 2,
+    vy: (Math.random() - 0.5) * 2
+  });
+}
+
+// ======================
+// LOOP
+// ======================
+function loop() {
+
   ctx.fillStyle = "black";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "white";
-  ctx.fillRect(x,50,20,20);
+  for (let e of entities) {
 
-  x += 2;
+    // movement
+    e.x += e.vx;
+    e.y += e.vy;
 
-  document.getElementById("ui").innerHTML =
-"<span style='color:red;font-size:30px;'>RUNNING</span>";
+    // bounce off walls
+    if (e.x < 0 || e.x > canvas.width) e.vx *= -1;
+    if (e.y < 0 || e.y > canvas.height) e.vy *= -1;
+
+    // energy drain
+    e.energy -= 0.05;
+
+    // death + reset
+    if (e.energy <= 0) {
+      e.x = Math.random() * canvas.width;
+      e.y = Math.random() * canvas.height;
+      e.energy = 20 + Math.random() * 20;
+    }
+
+    // draw entity
+    ctx.fillStyle = "white";
+    ctx.fillRect(e.x, e.y, 5, 5);
+  }
+
+  // UI
+  document.getElementById("ui").innerText =
+`God Sim - Multi Entity
+
+Population: ${entities.length}
+Sample Energy: ${entities[0].energy.toFixed(1)}`;
 
   requestAnimationFrame(loop);
 }
