@@ -91,7 +91,7 @@ for (let i = 0; i < 25; i++) {
 // ======================
 // MOVE
 // ======================
-function move(e) }
+function move(e) {
 
   let dirs = [
     [1,0],
@@ -100,7 +100,6 @@ function move(e) }
     [0,-1]
   ];
 
-  // 70% chance to seek food
   if (Math.random() < 0.7) {
 
     let bestX = e.x;
@@ -127,7 +126,6 @@ function move(e) }
 
   } else {
 
-    // random wandering
     let d = dirs[Math.floor(Math.random() * dirs.length)];
 
     e.x += d[0];
@@ -138,7 +136,6 @@ function move(e) }
     if (e.x >= gridSize) e.x = gridSize - 1;
     if (e.y >= gridSize) e.y = gridSize - 1;
   }
-}
 }
 
 // ======================
