@@ -182,10 +182,12 @@ for (let y = 0; y < gridSize; y++) {
 e.energy -= 0.02;
 
 // 👇 PUT FIGHTING HERE
+
 let localFood = food[e.y][e.x];
 
-if (localFood < 2 && Math.random() < 0.05) {
-
+// only act if hungry
+if (localFood < 2) {
+if (dx <= 1 && dy <= 1 && other.energy > 0)
   for (let other of entities) {
 
     if (other === e) continue;
@@ -193,12 +195,27 @@ if (localFood < 2 && Math.random() < 0.05) {
     let dx = Math.abs(other.x - e.x);
     let dy = Math.abs(other.y - e.y);
 
-    if (dx <= 1 && dy <= 1 && other.energy > 0) {
-      fight(e, other);
+    let close = dx <= 1 && dy <= 1;
+
+    if (close) {
+
+      // ⚖️ DECISION: fight or run
+      if (e.energy > other.energy * 1.2) {
+        fight(e, other); // strong = attack
+      } else {
+        // weak = run away
+        if (Math.random() < 0.7) {
+          e.x += (e.x - other.x);
+          e.y += (e.y - other.y);
+        }
+      }
+
       break;
     }
   }
-}
+} {
+
+
 
     // eat
     if (food[e.y][e.x] > 0) {
@@ -211,8 +228,6 @@ if (localFood < 2 && Math.random() < 0.05) {
 
     // reproduction (stable)
   if (e.energy > 45 && Math.random() < 0.15) {
-      e.energy -= 10;
-
       e.energy -= 15;
 alive.push(spawnEntity(e.x, e.y, 15));
     }
