@@ -23,7 +23,8 @@ function loop(){
 
   x += 2;
 
-  document.getElementById("ui").innerText = "RUNNING";
+  document.getElementById("ui").innerHTML =
+"<span style='color:red;font-size:30px;'>RUNNING</span>";
 
   requestAnimationFrame(loop);
 }
