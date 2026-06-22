@@ -33,7 +33,19 @@ for (let y = 0; y < gridSize; y++) {
 let entities = [];
 
 function spawnEntity(x, y, energy = 20) {
+
+  const names = [
+    "Adam","Eve","Noah","Sarah",
+    "John","Mary","David","Rachel",
+    "James","Anna","Luke","Leah"
+  ];
+
   return {
+    name: names[Math.floor(Math.random()*names.length)],
+    sex: Math.random() < 0.5 ? "Male" : "Female",
+    age: 0,
+    children: 0,
+
     x,
     y,
     energy
