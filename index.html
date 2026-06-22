@@ -5,8 +5,7 @@
 <canvas id="c"></canvas>
 <div id="ui">Loading...</div>
 
-<script>
-const canvas = document.getElementById("c");
+<script>const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
@@ -23,26 +22,37 @@ let food = [];
 for (let y = 0; y < gridSize; y++) {
   let row = [];
   for (let x = 0; x < gridSize; x++) {
-    row.push(Math.random() < 0.15 ? 8 : 0);
+    row.push(Math.random() < 0.25 ? 8 : 0);
   }
   food.push(row);
 }
 
 // ======================
-// ENTITIES
+// ENTITIES (IMPORTANT: persistent array)
 // ======================
 let entities = [];
 
-for (let i = 0; i < 20; i++) {
-  entities.push({
-    x: Math.floor(Math.random() * gridSize),
-    y: Math.floor(Math.random() * gridSize),
-    energy: 20 + Math.random() * 20
-  });
+function spawnEntity(x, y, energy = 20) {
+  return {
+    x,
+    y,
+    energy
+  };
+}
+
+// start population
+for (let i = 0; i < 25; i++) {
+  entities.push(
+    spawnEntity(
+      Math.floor(Math.random() * gridSize),
+      Math.floor(Math.random() * gridSize),
+      20 + Math.random() * 20
+    )
+  );
 }
 
 // ======================
-// MOVE TO FOOD
+// MOVE
 // ======================
 function move(e) {
   let dirs = [[1,0],[-1,0],[0,1],[0,-1]];
@@ -84,52 +94,55 @@ function loop() {
     }
   }
 
-  let newEntities = [];
+  let alive = [];
 
   for (let e of entities) {
 
-    // energy drain
-    e.energy -= 0.05;
+    // energy system
+    e.energy -= 0.02;
 
     // eat
     if (food[e.y][e.x] > 0) {
       e.energy += 1;
-      food[e.y][e.x] -= 0.4;
+      food[e.y][e.x] -= 0.5;
     }
 
     // movement
     move(e);
 
-    // REPRODUCTION SYSTEM
-    if (e.energy > 35) {
-      e.energy -= 15;
+    // reproduction (stable)
+    if (e.energy > 30) {
+      e.energy -= 10;
 
-      newEntities.push({
-        x: e.x,
-        y: e.y,
-        energy: 15
-      });
+      alive.push(spawnEntity(e.x, e.y, 15));
     }
 
-    // death
-    if (e.energy <= 0) {
-      continue; // remove entity
+    // death check
+    if (e.energy > 0) {
+      alive.push(e);
     }
-
-    // draw entity
-    ctx.fillStyle = "white";
-    ctx.fillRect(e.x * tile, e.y * tile, tile, tile);
-
-    newEntities.push(e);
   }
 
-  entities = newEntities;
+  entities = alive;
+
+  // emergency respawn if extinction happens
+  if (entities.length === 0) {
+    for (let i = 0; i < 20; i++) {
+      entities.push(
+        spawnEntity(
+          Math.floor(Math.random() * gridSize),
+          Math.floor(Math.random() * gridSize),
+          25
+        )
+      );
+    }
+  }
 
   document.getElementById("ui").innerText =
-`God Sim - Reproduction System
+`God Sim - Stable Ecosystem
 
 Population: ${entities.length}
-Food remaining: ${food.flat().filter(f => f > 0).length}`;
+Food density: ${food.flat().filter(f => f > 0).length}`;
 
   requestAnimationFrame(loop);
 }
