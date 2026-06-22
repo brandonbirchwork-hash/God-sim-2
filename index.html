@@ -97,53 +97,47 @@ function moveTowardFood() {
 function loop() {
 
   ctx.fillStyle = "black";
+
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // draw food
-  for (let yy = 0; yy < size; yy++) {
-    for (let xx = 0; xx < size; xx++) {
+  // 🔋 ENERGY ALWAYS DECREASES
 
-      if (food[yy][xx] > 0) {
-        ctx.fillStyle = "#2ecc71";
-      } else {
-        ctx.fillStyle = "#0b2a4a";
-      }
+  energy -= 0.03;
 
-      ctx.fillRect(xx*tile, yy*tile, tile, tile);
-    }
+  // 👣 MOVEMENT ALWAYS RUNS FIRST
+
+  x += 1;
+
+  // ☠️ RESET ONLY AFTER MOVEMENT
+
+  if (energy <= 0 || x > canvas.width) {
+
+    x = 50;
+
+    y = 50;
+
+    energy = 20;
+
   }
 
-  // hunger system
-  energy -= 0.05;
+  // 🎨 DRAW ENTITY
 
-  // eat food
-  if (food[y][x] > 0) {
-    energy += 0.8;
-    food[y][x] -= 0.2;
-  }
-
-  // death reset
-  if (energy <= 0) {
-    x = 20;
-    y = 20;
-    energy = 30;
-  }
-
-  // movement
-  moveTowardFood();
-
-  // draw entity
   ctx.fillStyle = "white";
-  ctx.fillRect(x*tile, y*tile, tile, tile);
 
-  // UI
+  ctx.fillRect(x,y,10,10);
+
+  // 📊 UI
+
   document.getElementById("ui").innerText =
+
 `God Sim - Food System
 
 Energy: ${energy.toFixed(1)}
-Position: (${x}, ${y})`;
+
+Position: (${x.toFixed(0)}, ${y.toFixed(0)})`;
 
   requestAnimationFrame(loop);
+
 }
 
 loop();
